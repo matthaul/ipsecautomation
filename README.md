@@ -1,6 +1,3 @@
-# ipsecautomation
-Automate ipsec tunnel vpn. Improve readability for tunnel statuses. Create a set it and forget it, tunnel monitor/keep alive service. 
-
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
@@ -236,15 +233,15 @@ Project Link: [https://github.com/matthaul/ipsecautomation](https://github.com/m
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/matthaul/repo.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/matthaul/ipsecautomation.svg?style=for-the-badge
 [contributors-url]: https://github.com/matthaul/ipsecautomation/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/matthaul/repo.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/matthaul/ipsecautomation.svg?style=for-the-badge
 [forks-url]: https://github.com/matthaul/ipsecautomation/network/members
-[stars-shield]: https://img.shields.io/github/stars/matthaul/repo.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/matthaul/ipsecautomation.svg?style=for-the-badge
 [stars-url]: https://github.com/matthaul/ipsecautomation/stargazers
-[issues-shield]: https://img.shields.io/github/issues/matthaul/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/matthaul/ipsecautomation.svg?style=for-the-badge
 [issues-url]: https://github.com/matthaul/ipsecautomation/issues
-[license-shield]: https://img.shields.io/github/license/matthaul/repo.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/matthaul/ipsecautomation.svg?style=for-the-badge
 [license-url]: https://github.com/matthaul/ipsecautomation/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/matthaul
