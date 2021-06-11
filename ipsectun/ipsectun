@@ -1,0 +1,154 @@
+#!/bin/bash
+
+######################################################################
+# ipsectun
+#####################################################################
+# Script that reviews all configured tunnels and determines if they are down or up.
+# Script will attempt to up the tunnels that are down. It will report what is/was down.
+#
+# This is not based on IP connectivity but rather IPsec reporting that a tunnel is not established.
+# If IPsec fails to establish a tunnel for some time, it eventually stops trying. 
+# This script will start that process by executing an “ipsec auto –up” command 
+# on the non-established connection
+#####################################################################
+### /var/log/ipsectun.log
+# Displays the action that was taken and the result after the action
+# The last line in the log displays the last run datetime
+### /var/log/ipsectunlastrun.log
+# Displays only the last output of the script
+# (populated from cron job)
+######################################################################
+### ipsectun Usage
+# run # ipsectun
+# run # /usr/local/sbin/ipsectun  
+######################################################################
+
+
+#IPSECCMD: Location of the ipsec command (may very on distros)
+#IPSECCMD="/usr/local/sbin/ipsec" #Custom built path
+IPSECCMD="/usr/sbin/ipsec" #Default yum install path
+
+#Temp Files used to find conns
+CONNSFILE="ipsectunall.txt"
+CONNSUPFILE="ipsectunup.txt"
+CONNSDOWNFILE="ipsectundown.txt"
+CONNSDOWNNAMESFILE="ipsectundownnames.txt"
+
+# ME: Name of the running file 
+ME="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+
+# CONNSLOG: Log that contains results when action is taken
+CONNSLOG="/var/log/""$ME"".log"
+
+# CONNSEXCLUDEDARRAY: Array of ipsec conn names to exclude from the evaluation
+## Add Conn Names that you don't want to detect as down ##
+declare -a CONNSEXCLUDEDARRAY=("l2tpd-psk" "element2" "element3") 
+
+# CONN Counts
+TOTALCONNS=0
+TOTALCONNSUP=0
+TOTALCONNSDOWN=0
+
+# Get_Tun: function
+# greps the ipsec auto –status to find all tunnels/conns.
+# then again to find established tunnels/conns
+# after removing exclusions, the two lists are compared
+# resulting in a list of down tunnels/conns
+# from that list, a list of just the conn names are generated
+# function outputs a list of conn names that need to be upped
+# and reports total, up, and down.
+Get_Tun () {
+        #Get Tunnels that are added in the running config
+        $IPSECCMD auto --status | grep "000 " | grep -oP '"\K[^"\047]+(?=["\047])' | sort | uniq > "$CONNSFILE"
+        #Get Tunnels that are established
+        $IPSECCMD auto --status | grep "000 #" | grep "estab" | grep -oP '"\K[^"\047]+(?=["\047])' | sort | uniq > "$CONNSUPFILE"
+        
+        
+        CONNSEXCLUDED="Conns Excluded"
+        CONNSEXCLUDEDCOUNT=0
+        for i in "${CONNSEXCLUDEDARRAY[@]}"
+        do
+                        # If execution exists as a running conn exclude it from the evaluation
+                        if grep -Fxq "$i" "$CONNSFILE"
+                                then
+                                        sed -i -e "s/$i//g" "$CONNSFILE"
+                                        sed -i '/^$/d' "$CONNSFILE"
+
+                                        sed -i -e "s/$i//g" "$CONNSUPFILE"
+                                        sed -i '/^$/d' "$CONNSUPFILE"
+
+                                        # Add the excluded conn name to the log string
+                                        CONNSEXCLUDED="$CONNSEXCLUDED"", $i"
+                                        
+                                        # Increment the valid execution count
+                                        ((CONNSEXCLUDEDCOUNT+=1))
+                        fi
+        done
+        # if there were no valid exclusions clear the excluded conn name from the log string
+        if [ "$CONNSEXCLUDEDCOUNT" -eq "0" ]
+                then
+                   CONNSEXCLUDED=""
+        fi
+        #Find the conns that are not up
+        comm -23 <(sort ${CONNSFILE}) <(sort ${CONNSUPFILE}) > $CONNSDOWNFILE
+        #Get just the name of the Conn (Remove /#x#)
+        cat $CONNSDOWNFILE | cut -f1 -d"/" | sort | uniq > $CONNSDOWNNAMESFILE
+
+
+        # Count the configured, up, and down connections
+        TOTALCONNS=$( cat ${CONNSFILE} | wc -l )
+        TOTALCONNSUP=$( cat ${CONNSUPFILE} | wc -l )
+        TOTALCONNSDOWN=$( cat ${CONNSDOWNFILE} | wc -l )
+
+        # Report conn totals to the user
+        echo "-----Tunnel Status-----"
+        echo "Conns: ${TOTALCONNSUP} UP, ${TOTALCONNSDOWN} DOWN, ${TOTALCONNS} TOTAL"
+        echo "${CONNSEXCLUDEDCOUNT} Conns excluded from evaluation ${CONNSEXCLUDED}"
+        echo "-------------------"
+}
+# Get tunnel/conn status
+Get_Tun
+
+# if there are down conns try to up them
+if [ "$TOTALCONNSDOWN" -gt "0" ]
+        then
+                        # Report down conn names to the user
+                        echo ""
+                        echo "-----DOWN CONNS----"
+                        cat $CONNSDOWNFILE
+                        echo "-------------------"
+
+
+                        # Report upping attempts to user
+                        echo ""
+                        echo "-----UPPING DOWN CONNS----"
+                        # for each down conn name perform ipsec auto --up
+                        while read c; do
+                                        echo "[ $(date) ] IPSEC AUTO UP --- $c"
+                                        echo "[ $(date) ] IPSEC AUTO UP --- $c" >> "$CONNSLOG"
+                                        # Asynchronous Up the tunnels so you don't have to wait for it to complete
+                                        $IPSECCMD auto --asynchronous --up ${c} 2>&1 | tee -a "$CONNSLOG"
+                        done <$CONNSDOWNNAMESFILE
+                        
+                        # Wait and then check the status of the tunnels/conns
+                        echo ""
+                        echo "---Waiting... Giving time for tunnels to come back up"
+                        sleep 5
+                        echo ""
+                        # Run and log the tunnel check
+                        Get_Tun | tee -a "$CONNSLOG"
+fi
+
+# Remove temp Files
+rm -f $CONNSFILE
+rm -f $CONNSUPFILE
+rm -f $CONNSDOWNFILE
+rm -f $CONNSDOWNNAMESFILE
+
+# Keep the last n rows of the log
+echo "$(tail -n100000 $CONNSLOG)" > "$CONNSLOG"
+# Remove the last line of the log
+sed -i '$ d' "$CONNSLOG"
+# Add the last datetime ran to the end of the log
+echo $(date)" LAST RUN" | tee -a  >> "$CONNSLOG"
+
