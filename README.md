@@ -88,10 +88,6 @@ Automate ipsec tunnel vpn. Improve readability for tunnel statuses. Create a set
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`matthaul`, `ipsecautomation`, `matthaul`, `matthaul@gmail.com`, `IPsec Automation`, `Automate ipsec tunnel vpn. Improve readability for tunnel statuses. Create a set it and forget it, tunnel monitor/keep alive service.`
-
-
 A tool to help tunnel administrators report and automate management of ipsec connections and tunnels.
 The first problem to solve is determine when an ipsec conn or a tunnel within that connection is down. Then bringing that tunnel up and doing so in such a way that does not require setting up IP addresses to monitor. The config file already knows what you are trying to do.
 
@@ -122,7 +118,8 @@ To get a local copy up and running follow these simple steps.
 ipsec
 *   conn added and up
 *   identify the full path of the ipsec executable 
-    default for centos
+    
+    (default for centos)
     ```sh
     /usr/sbin/ipsec
     ```
@@ -167,7 +164,7 @@ To make it quick and easy to run do the following
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-###Example 1
+### Example 1
 Case: All tunnels are up
 *   Run
     ```sh
@@ -178,7 +175,7 @@ Case: All tunnels are up
     
     ```
 
-###Example 2
+### Example 2
 Case: Some tunnels are down
 *   Run
     ```sh
@@ -240,14 +237,14 @@ Project Link: [https://github.com/matthaul/ipsecautomation](https://github.com/m
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/matthaul/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/matthaul/repo/graphs/contributors
+[contributors-url]: https://github.com/matthaul/ipsecautomation/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/matthaul/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/matthaul/repo/network/members
+[forks-url]: https://github.com/matthaul/ipsecautomation/network/members
 [stars-shield]: https://img.shields.io/github/stars/matthaul/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/matthaul/repo/stargazers
+[stars-url]: https://github.com/matthaul/ipsecautomation/stargazers
 [issues-shield]: https://img.shields.io/github/issues/matthaul/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/matthaul/repo/issues
+[issues-url]: https://github.com/matthaul/ipsecautomation/issues
 [license-shield]: https://img.shields.io/github/license/matthaul/repo.svg?style=for-the-badge
-[license-url]: https://github.com/matthaul/repo/blob/master/LICENSE.txt
+[license-url]: https://github.com/matthaul/ipsecautomation/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/matthaul
