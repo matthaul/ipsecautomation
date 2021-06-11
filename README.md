@@ -241,7 +241,7 @@ Project Link: [https://github.com/matthaul/ipsecautomation](https://github.com/m
 [stars-url]: https://github.com/matthaul/ipsecautomation/stargazers
 [issues-shield]: https://img.shields.io/github/issues/matthaul/ipsecautomation.svg?style=for-the-badge
 [issues-url]: https://github.com/matthaul/ipsecautomation/issues
-[license-shield]: https://img.shields.io/github/license/matthaul/ipsecautomation.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge
 [license-url]: https://opensource.org/licenses/MIT
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/matthaul
