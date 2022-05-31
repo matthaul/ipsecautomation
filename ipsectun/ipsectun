@@ -159,6 +159,8 @@ if [ "$TOTALCONNSDOWN" -gt "0" ]
                         fi
 
 fi
+# Get tunnel/conn status
+Get_Tun
 
 # Remove temp Files
 rm -f $CONNSFILE
