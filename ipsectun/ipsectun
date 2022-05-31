@@ -6,9 +6,12 @@
 # Script that reviews all configured tunnels and determines if they are down or up.
 # Script will attempt to up the tunnels that are down. It will report what is/was down.
 #
+# If the up action fails to bring all tunnels up the script will down and up the tunnels.
+#
 # This is not based on IP connectivity but rather IPsec reporting that a tunnel is not established.
 # If IPsec fails to establish a tunnel for some time, it eventually stops trying. 
 # This script will start that process by executing an “ipsec auto –up” command 
+# if the “ipsec auto –up” command fails it will “ipsec auto –down && ipsec auto -up” command 
 # on the non-established connection
 #####################################################################
 ### /var/log/ipsectun.log
@@ -137,6 +140,24 @@ if [ "$TOTALCONNSDOWN" -gt "0" ]
                         echo ""
                         # Run and log the tunnel check
                         Get_Tun | tee -a "$CONNSLOG"
+                        # If there are still conns down try to down and up them.
+                        if [ "$TOTALCONNSDOWN" -gt "0" ]
+                                then
+                                        echo ""
+                                        echo "--- UP Only Failed attempting to DOWN and UP"
+                                        echo ""
+                                        while read c; do
+                                                        echo "[ $(date) ] IPSEC AUTO DOWN --- $c"
+                                                        echo "[ $(date) ] IPSEC AUTO DOWN --- $c" >> "$CONNSLOG"
+                                                        # Asynchronous Up the tunnels so you don't have to wait for it to complete
+                                                        $IPSECCMD auto --asynchronous --down ${c} 2>&1 | tee -a "$CONNSLOG"
+                                                        echo "[ $(date) ] IPSEC AUTO UP --- $c"
+                                                        echo "[ $(date) ] IPSEC AUTO UP --- $c" >> "$CONNSLOG"
+                                                        # Asynchronous Up the tunnels so you don't have to wait for it to complete
+                                                        $IPSECCMD auto --asynchronous --up ${c} 2>&1 | tee -a "$CONNSLOG"
+                                        done <$CONNSDOWNNAMESFILE
+                        fi
+
 fi
 
 # Remove temp Files

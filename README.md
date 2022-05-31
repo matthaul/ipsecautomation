@@ -93,6 +93,7 @@ Function
 * Get and report total, up, and down conns running via ipsec. Excluding conns that the user specified.
 * If tunnel is down report ipsec conn name and run ipsec auto --up for each down conn identified.
 * Recheck totals
+* If tunnel is still down then issue a down and up ipsec for the identified connection
 
 Problem
 * ipsec can and will bring back up a non established conn but if it fails too many times it appears to stop trying. 
