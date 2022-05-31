@@ -156,11 +156,12 @@ if [ "$TOTALCONNSDOWN" -gt "0" ]
                                                         # Asynchronous Up the tunnels so you don't have to wait for it to complete
                                                         $IPSECCMD auto --asynchronous --up ${c} 2>&1 | tee -a "$CONNSLOG"
                                         done <$CONNSDOWNNAMESFILE
+                                        # Get tunnel/conn status
+                                        Get_Tun
                         fi
 
 fi
-# Get tunnel/conn status
-Get_Tun
+
 
 # Remove temp Files
 rm -f $CONNSFILE
