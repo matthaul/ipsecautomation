@@ -147,6 +147,10 @@ To make it quick and easy to run do the following
    ```sh
    vim ipsectun
    ```
+2a. Or you can download the file
+  ```
+  wget --inet4-only -O ipsectun https://raw.githubusercontent.com/matthaul/ipsecautomation/main/ipsectun/ipsectun --no-check-certificate
+  ```
 3.  (Optional) Automate it with crontab and log last output
     ```sh
     crontab -e
